@@ -1,11 +1,14 @@
 // ObjectQueue.java
 
-public class ObjectQueue {
-	private Object[] item;
-	private int front;
-	private int rear;
-	private int count;
+public class ObjectQueue implements ObjectQueueInterface{
+	private Object[] item;		//objects in queue
+	private int front;			//index of the object at the front of the queue
+	private int rear;			//index of the object at the rear of the queue
+	private int count;			//the number of elements in the queue
 
+	/**
+	 * Constructor - initializes the queue
+	 */
     public ObjectQueue() {
         item = new Object[1];
         front = 0;
@@ -15,8 +18,8 @@ public class ObjectQueue {
 
     
     /**
-     * 
-     * @return
+     * Return whether the queue is empty or not
+     * @return true if it is empty, false otherwise
      */
     public boolean isEmpty() {
         return count == 0;
@@ -24,8 +27,8 @@ public class ObjectQueue {
     
     
     /**
-     * 
-     * @return
+     * Returns whether the queue is full or not
+     * @return true if the queue is full, false otherwise
      */
     public boolean isFull() {
         return count == item.length;
@@ -33,7 +36,7 @@ public class ObjectQueue {
     
     
     /**
-     * 
+     *Empties the queue
      */
     public void clear() {
         item = new Object[1];
@@ -44,8 +47,8 @@ public class ObjectQueue {
      
     
     /**
-     * 
-     * @param o
+     * Inserts a new element into the queue
+     * @param o - object to insert into queue
      */
     public void insert(Object o) {
         if (isFull())
@@ -57,8 +60,8 @@ public class ObjectQueue {
     
     
     /**
-     * 
-     * @return
+     * Removes the element at the front of the queue
+     * @return item at the front of queue
      */
     public Object remove() {
         if (isEmpty()) {
@@ -76,8 +79,8 @@ public class ObjectQueue {
     
     
     /**
-     * 
-     * @return
+     * Returns the elements at the front of the queue without deleting it
+     * @return item at the front of queue
      */
     public Object query() {
         if (isEmpty()) {
@@ -89,8 +92,8 @@ public class ObjectQueue {
 
     
     /**
-     * 
-     * @param size
+     * Resizes the queue
+     * @param size - the size to resize the queue to
      */
     private void resize(int size) {
         Object[] temp = new Object[size];

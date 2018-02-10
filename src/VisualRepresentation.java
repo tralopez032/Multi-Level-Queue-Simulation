@@ -1,9 +1,11 @@
+/**
+ * Draws the visual simulation
+ */
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -11,20 +13,27 @@ public class VisualRepresentation extends JPanel{
 
 	private JFrame frame;
 	private Clock visualClock;
+	
+	//Rectangles representing queues and cpu
 	private Rectangle2D.Double queue1;
 	private Rectangle2D.Double queue2;
 	private Rectangle2D.Double queue3;
 	private Rectangle2D.Double queue4;
 	private Rectangle2D.Double cpu;
+	
+	//used to determine how far into the queue the job can go
 	private int q1MaxX;
 	private int q2MaxX;
 	private int q3MaxX;
 	private int q4MaxX;
-	private JobVisual jv [];
-	private Font font;
-	private int indexOfJobInCpu;
 	
+	private JobVisual jv [];		//array of rectangles representing jobs
+	private Font font;				//font of the strings drawn
+	private int indexOfJobInCpu;	//index of the rectangle in jv[] that represents the job currently in cpu 
 	
+	/**
+	 * Constructor - initialized global variables
+	 */
 	public VisualRepresentation() {
 		frame = new JFrame();
 		frame.setVisible(true);
@@ -48,6 +57,9 @@ public class VisualRepresentation extends JPanel{
 		}
 
 	
+	/**
+	 * Draws graphics on screen
+	 */
 	public void displaySimulation(){
 		queue1.setFrame(100, 100, 200, 60);
 		queue2.setFrame(100, 220, 200, 60);
@@ -97,7 +109,9 @@ public class VisualRepresentation extends JPanel{
 		});
 	}
 	
-
+	/**
+	 * Updates the clock on screen and the time left for the job on the cpu
+	 */
 	public void updateVisualClock(){
 		visualClock.tick();
 		if(indexOfJobInCpu >= 0){
@@ -106,7 +120,11 @@ public class VisualRepresentation extends JPanel{
 		frame.repaint();
 	}
 	
-	
+	/**
+	 * Inserts new rectangle into visual simulation and moves it right into the first queue
+	 * @param pid - id of the rectangle to move
+	 * @param timeNeeded - cpu time job requires 
+	 */
 	public void addJob(int pid, int timeNeeded){
 		jv[pid-101].setString(Integer.toString(pid), timeNeeded);
 		moveDown(pid);
@@ -115,7 +133,11 @@ public class VisualRepresentation extends JPanel{
 		q1MaxX = (int) jv[pid-101].getJobRep().getX();
 	}
 		
-	
+	/**
+	 * Moves rectangle right until its inside cpu
+	 * @param pid - id of rectangle to move
+	 * @param queue - queue that the rectangle came from
+	 */
 	public void enterCpu(int pid, int queue){
 		moveRight(pid, (int) cpu.getMaxX()-30);
 		indexOfJobInCpu = pid-101;
@@ -139,10 +161,16 @@ public class VisualRepresentation extends JPanel{
 		}
 	}
 	
+	
+	/**
+	 * Moves rectangle into the next level queue
+	 * @param pid - id of the rectangle to move
+	 * @param lastQueue - level of the last queue that the rectangle was in
+	 */
 	public void moveJobToLowerQueue(int pid, int lastQueue){
-
 		moveDown(pid);
 		
+		//moves left
 		Thread animationThread3 = new Thread(new Runnable(){
 			public void run(){
 				while(jv[pid-101].getJobRep().getMinX() > 100){
@@ -154,7 +182,7 @@ public class VisualRepresentation extends JPanel{
 			}
 		});
 		animationThread3.start();
-		while(animationThread3.getState() != Thread.State.TERMINATED){
+		while(animationThread3.getState() != Thread.State.TERMINATED){	//waits until its done moving to continue
 		}
 		
 		if(lastQueue < 4){
@@ -180,11 +208,21 @@ public class VisualRepresentation extends JPanel{
 		indexOfJobInCpu = -1;
 	}
 	
-	public void removeJob(int pid, int queue){
+	
+	/**
+	 * Moves rectangle off of screen
+	 * @param pid - id of rectangle to move
+	 */
+	public void removeJob(int pid){
 		moveRight(pid, 700);
 	}
 
 	
+	/**
+	 * Moves rectangle right until it reaches a certain destination
+	 * @param pid - id of the rectangle to move
+	 * @param destination - new location of the rectangle after moving right
+	 */
 	public void moveRight(int pid, int destination){
 		Thread animationThread1 = new Thread(new Runnable(){
 			public void run(){
@@ -197,17 +235,22 @@ public class VisualRepresentation extends JPanel{
 			}
 		});
 		animationThread1.start();
-		while(animationThread1.getState() != Thread.State.TERMINATED){	
+		while(animationThread1.getState() != Thread.State.TERMINATED){	//waits until its done moving to continue
 		}
 	}
 	
+	
+	/**
+	 * Moves rectangle down 60
+	 * @param pid - pid of the rectangle to move
+	 */
 	public void moveDown(int pid){
 		int yMax = (int) jv[pid-101].getJobRep().getY() + 60;
 		
 		Thread animationThread2 = new Thread(new Runnable(){
 			public void run(){
 				while(jv[pid-101].getJobRep().y < yMax){
-					jv[pid-101].getJobRep().y = (jv[pid-101].getJobRep().getY() + 10); //down doesnt show going down it just appears there!
+					jv[pid-101].getJobRep().y = (jv[pid-101].getJobRep().getY() + 10);
 					jv[pid-101].getJobRep().setFrame(jv[pid-101].getJobRep());
 					frame.repaint();
 				}
@@ -215,19 +258,20 @@ public class VisualRepresentation extends JPanel{
 			}
 		});
 		animationThread2.start();
-		while(animationThread2.getState() != Thread.State.TERMINATED){
+		while(animationThread2.getState() != Thread.State.TERMINATED){	//waits until its done moving to continue
 		}
 	}
 
+	
 	/**
-	 * moves rectangle object up
+	 * Moves rectangle object up
 	 * @param pid - id of the rectangle to move
 	 */
 	public void moveUp(int pid){
 		Thread animationThread4 = new Thread(new Runnable(){
 			public void run(){
 				while(jv[pid-101].getJobRep().y > 470){
-					jv[pid-101].getJobRep().y = (jv[pid-101].getJobRep().getY() - 10); //down doesnt show going down it just appears there!
+					jv[pid-101].getJobRep().y = (jv[pid-101].getJobRep().getY() - 10);
 					jv[pid-101].getJobRep().setFrame(jv[pid-101].getJobRep());
 					frame.repaint();
 				}
@@ -235,7 +279,7 @@ public class VisualRepresentation extends JPanel{
 			}
 		});
 		animationThread4.start();
-		while(animationThread4.getState() != Thread.State.TERMINATED){
+		while(animationThread4.getState() != Thread.State.TERMINATED){ //waits until its done moving to continue
 		}
 	}
 }

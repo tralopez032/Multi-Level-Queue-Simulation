@@ -1,3 +1,6 @@
+/**
+ * Reads input from mfg.txt to create jobs and processes them
+ */
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -5,25 +8,28 @@ import java.util.Scanner;
 
 
 public class MFQ {
-	private PrintWriter pw;
+	private PrintWriter pw;			//writes to csis.txt
 	private Scanner in;
-	private ObjectQueue jobs;
+	private ObjectQueue jobs;		//holds all jobs
+	
+	//queues
 	private ObjectQueue level1;
 	private ObjectQueue level2;
 	private ObjectQueue level3;
 	private ObjectQueue level4;
+	
 	private Clock systemClock;
 	private CPU cpu;
-	private int totalJobs;
-	private int totalTime;
-	private int totalWaitTime;
-	private int cpuIdleTime;
-	private int totalResponseTime;
-	private VisualRepresentation vr;
+	private int totalJobs;				//total number of jobs
+	private int totalTime;				//total time that the system runs for
+	private int totalWaitTime;			//total wait time of all jobs
+	private int cpuIdleTime;			//total time the cpu is idle for
+	private int totalResponseTime;		//total response time of all jobs 
+	private VisualRepresentation vr;	
 	
 	
 	/**
-	 * 
+	 * Constructor - initialized global variables
 	 * @param p - output file
 	 * @throws FileNotFoundException
 	 */
@@ -47,7 +53,7 @@ public class MFQ {
 	
 	
 	/**
-	 * read input from mfq.txt and use input to instantiate jobs in queue
+	 * Reads input from mfq.txt and uses input to instantiate all jobs
 	 */
 	public void getJobs(){
 		String input = "/0";
@@ -65,7 +71,7 @@ public class MFQ {
 	
 	
 	/**
-	 * 
+	 * Prints header to output file csis.txt
 	 */
 	public void outputHeader(){
 		pw.println("Event\t\tSystem Time\tProcess ID\tCPU Time Required\tTotal Time in System\tLowest Level Queue");
@@ -75,10 +81,10 @@ public class MFQ {
 	
 	
 	/**
-	 * @throws InterruptedException 
-	 *
+	 * Runs the simulation
+	 * Manages and processes all jobs
 	 */
-	public void runSimulation() throws InterruptedException{
+	public void runSimulation(){
 		Job nextJob = new Job();
 
 		nextJob = (Job) jobs.remove();
@@ -97,7 +103,7 @@ public class MFQ {
 					totalTime += (systemClock.getTime()-cpu.getJob().getArrivalTime());
 					totalWaitTime += (systemClock.getTime()-cpu.getJob().getArrivalTime()) - cpu.getJob().getCpuTimeRequired();
 					pw.println("Departure\t     " + systemClock.getTime() + "   \t   " + cpu.getJob().getPid() + "\t\t\t\t\t\t   " + (systemClock.getTime()-cpu.getJob().getArrivalTime()) + "\t\t\t" + cpu.getJob().getCurrentQueue());
-					vr.removeJob(cpu.getJob().getPid(), cpu.getJob().getCurrentQueue());
+					vr.removeJob(cpu.getJob().getPid());
 					cpu.setBusyFlag(false);
 				}else if(cpu.getCpuQuantumClock() == 0){	//if the cpu process time is over and the job is still not done, insert it into the next lower level queue
 					vr.moveJobToLowerQueue(cpu.getJob().getPid(), cpu.getJob().getCurrentQueue());
@@ -118,8 +124,7 @@ public class MFQ {
 				cpu.setJob((Job)level1.remove(), 1);			//assign job to cpu
 				vr.enterCpu(cpu.getJob().getPid(), cpu.getJob().getCurrentQueue());
 				totalResponseTime = systemClock.getTime() - cpu.getJob().getArrivalTime();
-						
-				//System.out.println("done adding");
+				
 				//output arrival message
 				pw.println("Arrival\t\t     " + systemClock.getTime() + "\t\t   " + nextJob.getPid() + "\t\t\t" + nextJob.getCpuTimeRequired());
 				
@@ -158,7 +163,7 @@ public class MFQ {
 	
 	
 	/**
-	 * 
+	 * Moves the given job down the next lower level queue
 	 * @param job - job that will be moved down to the next queue
 	 */  			
 	private void moveJobToLowerQueue(Job job){
@@ -179,7 +184,7 @@ public class MFQ {
 	
 	
 	/**
-	 * prints program statistics to output file csis.txt
+	 * Prints program statistics to output file csis.txt
 	 */
 	public void outStats(){
 		double averageTurnaroundTime = (double)totalTime/totalJobs;

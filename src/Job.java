@@ -1,13 +1,15 @@
 
 public class Job {
 
-	private int pid;
-	private int arrivalTime;
-	private int cpuTimeRequired;
-	private int cpuTimeRemaining;
-	private int currentQueue;
+	private int pid;				//used to identify job
+	private int arrivalTime;		//time it will enter the system
+	private int cpuTimeRequired;	//amount of cpu time the job needs
+	private int cpuTimeRemaining;	//amount of cpu time left until job completes
+	private int currentQueue;		//level of the queue that the job is currently in
 
-	
+	/**
+	 * Constructor - initializes global variables
+	 */
 	public Job(){
 		arrivalTime = 0;
 		pid = 0;
@@ -15,6 +17,12 @@ public class Job {
 		cpuTimeRemaining = 0;
 	}
 	
+	/**
+	 * Constructor - initializes global variables
+	 * @param arriveTime - time of arrival
+	 * @param id - pid of the job
+	 * @param cpuTime - the amount of cpu time required by the job
+	 */
 	public Job(int arriveTime, int id, int cpuTime) {
 		arrivalTime = arriveTime;
 		pid = id;
@@ -24,7 +32,7 @@ public class Job {
 	
 	
 	/**
-	 * 
+	 * Decrements the time remaining until the job completes
 	 */
 	public void decrementTimeRemaining(){
 		cpuTimeRemaining--;
@@ -32,8 +40,8 @@ public class Job {
 
 	
 	/**
-	 * 
-	 * @param q
+	 * Sets the current queue of the job
+	 * @param q - level of queue
 	 */
 	public void setCurrentQueue(int q){
 		currentQueue = q;
@@ -41,7 +49,7 @@ public class Job {
 	
 	
 	/**
-	 * returns the cpu time remaining until the job is completed
+	 * Returns the cpu time remaining until the job is completed
 	 * @return cpuTimeRemaining
 	 */
 	public int getCpuTimeRemaining(){
@@ -50,8 +58,8 @@ public class Job {
 	
 	
 	/**
-	 * 
-	 * @return
+	 * Returns the total cpu time required by the job 
+	 * @return cpuTimeRequired
 	 */
 	public int getCpuTimeRequired(){
 		return cpuTimeRequired;
@@ -59,7 +67,7 @@ public class Job {
 	
 	
 	/**
-	 * returns the location of the current queue of the job
+	 * Returns the location of the current queue of the job
 	 * @return currentQueue
 	 */
 	public int getCurrentQueue(){
@@ -68,7 +76,7 @@ public class Job {
 	
 	
 	/**
-	 * 
+	 * Returns arrival time of the job
 	 * @return arrivalTime
 	 */
 	public int getArrivalTime(){
@@ -77,8 +85,8 @@ public class Job {
 	
 	
 	/**
-	 * 
-	 * @return
+	 * Returns pid of the job
+	 * @return pid
 	 */
 	public int getPid(){
 		return pid;

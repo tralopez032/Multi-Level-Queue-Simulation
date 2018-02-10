@@ -1,3 +1,7 @@
+/**
+ * draws a visual representation of a job with a pid for identification and a time representing the amount of cpu time a jobs until it is complete
+ */
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -7,13 +11,15 @@ import java.awt.geom.Rectangle2D;
 
 public class JobVisual {
 
-	private Rectangle2D.Double job;
-	private Graphics g1;
-	private String pid;
-	private int time;
-	private Font font;
+	private Rectangle2D.Double job;			//rectangle representing a job on screen
+	private String pid;						//pid of the job - used to identify jobs on screen
+	private int time;						//cpu time the job needs until completion
+	private Font font;						//font of the string drawn on screen
 	
 	
+	/**
+	 * Constructor - initializes global variables
+	 */
 	public JobVisual() {
 		job = new Rectangle2D.Double(-50, 45, 50, 50);
 		pid = " ";
@@ -22,6 +28,10 @@ public class JobVisual {
 	}
 	
 	
+	/**
+	 * draws the graphic representing a job
+	 * @param g - graphic used to draw
+	 */
 	public void paint(Graphics g){
 		Graphics2D gg = (Graphics2D) g;
 		
@@ -42,15 +52,29 @@ public class JobVisual {
 	}
 
 	 
+	/**
+	 * sets the strings that will be drawn on the screen
+	 * @param pid - pid of the job
+	 * @param time - the amount of cpu time the job needs
+	 */
 	public void setString(String pid, int time){
 		this.pid = pid;
 		this.time = time;
 	}
 	
+	
+	/**
+	 * updates the cpu time required for job until completion on screen
+	 */
 	public void updateTime(){
 		time --;
 	}
 	
+	
+	/**
+	 * returns a job representation
+	 * @return job - the rectangle that represents a job
+	 */
 	public Rectangle2D.Double getJobRep(){
 		return job;
 	}
